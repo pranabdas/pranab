@@ -23,14 +23,29 @@ jobs:
           declare -a short_names
           declare -a urls
 
+          short_names+=(500px)
+          urls+=(https://500px.com/pranab)
+
+          short_names+=(about)
+          urls+=(https://pranabdas.github.io)
+
           short_names+=(espresso)
           urls+=(https://pranabdas.github.io/espresso/)
+
+          short_names+=(home)
+          urls+=(https://pranabdas.github.io)
 
           short_names+=(homepage)
           urls+=(https://pranabdas.github.io)
 
+          short_names+=(publications)
+          urls+=(https://pranabdas.github.io/publications/)
+
           short_names+=(scholar)
           urls+=(https://scholar.google.com/citations?user=1cDTQjAAAAAJ)
+
+          short_names+=(rid)
+          urls+=(https://orcid.org/0000-0002-2332-082X)
 
           short_names+=(twitter)
           urls+=(https://twitter.com/pranab_das)
@@ -74,5 +89,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global credential.helper cache
           git add --all
-          git commit -m "update redirects" || echo "No changes to commit"
+          git commit -m "update url redirects" || echo "No changes to commit"
           git push origin gh-pages
