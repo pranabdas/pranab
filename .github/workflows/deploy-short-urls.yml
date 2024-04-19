@@ -1,0 +1,64 @@
+name: Deploy short urls
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+
+      - name: Deploy short urls
+        run: |
+          declare -a short_names
+          declare -a urls
+
+          short_names+=(espresso)
+          urls+=(https://pranabdas.github.io/espresso/)
+
+          short_names+=(homepage)
+          urls+=(https://pranabdas.github.io)
+
+          short_names+=(scholar)
+          urls+=(https://scholar.google.com/citations?user=1cDTQjAAAAAJ)
+
+          short_names+=(twitter)
+          urls+=(https://twitter.com/pranab_das)
+
+          len=${#urls[@]}
+
+          for i in $(seq 0 $(($len-1))); do
+          if [ -d ${short_names[$i]} ] ; then
+            cd ${short_names[$i]}
+          else
+            mkdir ${short_names[$i]} && cd $_
+          fi
+
+          cat > index.html << EOF
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta http-equiv="Refresh" content="0;${urls[$i]}">
+            </head>
+          </html>
+          EOF
+
+          cd ..
+          done
+
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global credential.helper cache
+          git add --all
+          git commit -m "update redirects" || echo "No changes to commit"
+          git push origin gh-pages
