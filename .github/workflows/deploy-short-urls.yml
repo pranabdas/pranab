@@ -38,7 +38,7 @@ jobs:
           len=${#urls[@]}
 
           for i in $(seq 0 $(($len-1))); do
-          if [ -d ${short_names[$i]} ] ; then
+          if [ -d ${short_names[$i]} ]; then
             cd ${short_names[$i]}
           else
             mkdir ${short_names[$i]} && cd $_
@@ -54,6 +54,20 @@ jobs:
           EOF
 
           cd ..
+          done
+
+          remove_list=()
+          remove_list+=(doesnotexist)
+
+          for item in "${remove_list[@]}"; do
+            if [ -d ${item} ] ; then
+              cd ${item}
+              if [ -f index.html ]; then
+                rm index.html
+              fi
+              cd ..
+              rmdir ${item} || echo "Directory is not empty"
+            fi
           done
 
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
